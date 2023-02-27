@@ -8,7 +8,7 @@
   --second-bg-color: black;
   --accent-bg-color: lightblue;
 
-  --hover-animation: 500ms linear;
+  --hover-animation: 250ms linear;
 }
 body {
   margin: 0;

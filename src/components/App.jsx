@@ -15,17 +15,19 @@ class App extends Component {
 
   addContact = ({ name, number }) => {
     const { contacts } = this.state;
-    const newContact = { id: nanoid(), name, number };
 
-    contacts.some(contact => contact.name === name)
-      ? Report.warning(
-          `${name}`,
-          'This user is already in the contact list.',
-          'OK'
-        )
-      : this.setState(({ contacts }) => ({
-          contacts: [newContact, ...contacts],
-        }));
+    if (contacts.some(contact => contact.name === name)) {
+      Report.warning(
+        `${name}`,
+        'This user is already in the contact list.',
+        'OK'
+      );
+      return;
+    }
+    const newContact = { id: nanoid(), name, number };
+    this.setState(({ contacts }) => ({
+      contacts: [newContact, ...contacts],
+    }));
   };
 
   deleteContact = contactId => {
@@ -47,13 +49,9 @@ class App extends Component {
   };
 
   render() {
-    const { filter } = this.state;
-    const addContact = this.addContact;
-    const changeFilter = this.changeFilter;
+    const { filter, contacts } = this.state;
+    const { addContact, changeFilter, deleteContact } = this;
     const filtredContacts = this.filtredContacts();
-    const deleteContact = this.deleteContact;
-    const length = this.state.contacts.length;
-
     return (
       <div className={css.container}>
         <h1 className={css.title}>
@@ -63,7 +61,7 @@ class App extends Component {
 
         <h2 className={css.subtitle}>Contacts</h2>
         <Filter filter={filter} changeFilter={changeFilter} />
-        {length > 0 ? (
+        {contacts.length > 0 ? (
           <ContactList
             contacts={filtredContacts}
             onDeleteContact={deleteContact}
